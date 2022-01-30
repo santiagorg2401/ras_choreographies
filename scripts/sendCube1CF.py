@@ -8,13 +8,10 @@ import numpy as np
 from pycrazyswarm import *
 from waypointsPublisher import waypointsPublisher
 
-# Add 'self.simTrue = args.sim' on crazyswarm_py.py after line 48.
-# This code requires enabled logging and logging variables health.motorPass & pm.vbat.
-
 #Crazyflies list, this is optional, however, it is safer to declare it on code.
 crazyflies_yaml = """
 crazyflies:
-  - id: 1
+  - id: 2
     channel: 80
     initialPosition: [1.5, 1.5, 0.0]
     type: default
@@ -46,60 +43,8 @@ class sender():
       for i, cf in enumerate(self.cfs):
         others = self.cfs[:i] + self.cfs[(i+1):]
         cf.enableCollisionAvoidance(others, radii)
-
-      for i in range(len(self.cfs)):
-        if self.swarm.simTrue:
-          pass
-        else:
-          #Import only if physical robots are being used.
-          import rospy
-          from crazyswarm.msg import GenericLogData as gld
-
-          attrs = dir(self.cfs[i])
-          id = getattr(self.cfs[i], attrs[44])
-          self.idM = np.append(self.idM, [id], axis=0)
-
-          #Subscribe to i topics, where the needed data are being published.
-          self.log1 = rospy.Subscriber("/cf"+ str(id) + "/log1", gld, self.adquireLog1DataCallback)
         
         self.cfs[i].setLEDColor(0/255.0, 0/255.0, 0/255.0)
-
-    def adquireLog1DataCallback(self, log1Data):
-      #Callback function, it extracts the data from the /cfi/log1 topics.
-      self.motPas = log1Data.values[0]    #LOG variable health.motorPass
-      self.batVol = log1Data.values[1]    #LOG variable pm.vbat
-
-    def preLaunchSequence(self):
-      #This method performs a propeller test and checks battery voltage on all listed Crazyflies.
-      for i in range(len(self.cfs)):
-        print("\nInitializing prelaunch sequence.")
-
-        self.cfs[i].setParam("ring/effect", 6)
-        self.cfs[i].setParam("health/startPropTest", 1)
-        self.timeHelper.sleep(5.0)
-        self.cfs[i].setParam("ring/effect", 7)
-
-        if self.motPas != 15 or self.batVol <= 3.7:
-          self.cfs[i].setLEDColor(255/255.0, 0/255.0, 0/255.0)
-          print("\nCrazyflie #" + str(self.idM[i]) + " cannot fly.")
-          ready = 0
-
-        else:
-          print("\nCrazyflie #" + str(self.idM[i]) + " is ready to fly.")
-          self.cfs[i].setLEDColor(0/255.0, 255/255.0, 0/255.0)
-          ready = 1
-
-        self.cfs[i].setParam("health/startPropTest", 0)
-
-        if self.motPas == 15:
-          msg = "succesful."
-        else:
-          msg = "failure."
-        
-        print("Propeller test: " + msg)
-        print("Battery voltage: " + str(self.batVol) + "V.")
-
-      return ready
 
     def publisher(self):
         #Adquire the desired coordinates list from waypointsPublisher.
@@ -128,11 +73,4 @@ class sender():
 
 if __name__ == "__main__":
     sen = sender()
-
-    if sen.swarm.simTrue:
-      sen.publisher()
-    else:
-      if sen.preLaunchSequence()== 1:
-        sen.publisher()
-      else:
-        print("Check the crazyflies.")
+    sen.publisher()
