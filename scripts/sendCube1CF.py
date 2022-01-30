@@ -28,12 +28,7 @@ class sender():
       self.swarm = Crazyswarm(crazyflies_yaml=crazyflies_yaml)  #Instance from the class Crazyswarm in pycrazyswarm.crazyswarm
       self.allcfs = self.swarm.allcfs                           #Instance from the class CrazyflieServer in pycrazyswarm.crazyflie
       self.cfs = self.allcfs.crazyflies                         #List of objects  from the class Crazyflie in pycrazyswarm.crazyflie, it has as many objects as declared in crazyflies_yaml, in the same order starting from 0.
-      self.timeHelper = self.swarm.timeHelper                   #Instance from the class timeHelper in pycrazyswarm.crazyflie
-      
-      #Global variables.
-      self.idM = np.array([])       #Crazyflie ID matrix.
-      self.batVol = np.array([])    #Battery voltage matrix.
-      self.motPas = np.array([])    #Propeller test result.
+      self.timeHelper = self.swarm.timeHelper                   #Instance from the class timeHelper in pycrazyswarm.crazyflie 
 
       #Set solid color effect on all  LED-Decks (see https://www.bitcraze.io/documentation/repository/crazyflie-firmware/master/ for more parameters).
       for cf in self.allcfs.crazyflies:
@@ -65,7 +60,7 @@ class sender():
             pos = data[0:3]
 
             self.cfs[0].goTo(pos, data[3] , data[4])
-            self.timeHelper.sleep(3.0)
+            self.timeHelper.sleep(data[4] + 1.0)
         
         #Land.
         self.allcfs.land(targetHeight=0.02, duration=3.0)
