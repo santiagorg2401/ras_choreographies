@@ -48,7 +48,7 @@ class sender():
         # Use uav_trajectories to execute a smooth 8th order polynomical trajectory.
         # Get the trajectory.
         traj = uav_trajectory.Trajectory()
-        traj.loadcsv("traj_star.csv")
+        traj.loadcsv("trajectories/traj_star.csv")
 
         TRIALS = 1
         TIMESCALE = 4.0
