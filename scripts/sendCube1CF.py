@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import sys
+import os
 
-# Change your user.
-sys.path.append('/home/santiagorg2401/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
+sys.path.append('/home/'+ os.getlogin() + '/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
 
 import numpy as np
 from pycrazyswarm import *

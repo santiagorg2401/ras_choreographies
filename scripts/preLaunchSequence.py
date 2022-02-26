@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import sys
+import os
+
+sys.path.append('/home/'+ os.getlogin() + '/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
 
 # TODO: Limitations: This code only works if you test 3 drones at a time and have no more than 4 drones connected.
 # Add 'self.simTrue = args.sim' on crazyswarm_py.py after line 48.
 # This code requires enabled logging and logging variables health.motorPass & pm.vbat.
-
-# Change your user.
-sys.path.append('/home/santiagorg2401/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
 
 import rospy
 from crazyswarm.msg import GenericLogData as gld
@@ -19,14 +19,6 @@ crazyflies:
   - id: 1
     channel: 80
     initialPosition: [2.0, 1.1, 0.0]
-    type: default
-  - id: 2
-    channel: 80
-    initialPosition: [2.0, 1.8, 0.0]
-    type: default
-  - id: 3
-    channel: 80
-    initialPosition: [1.5, 1.1, 0.0]
     type: default
 """
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import sys
+import os
 
-# Change your user.
-sys.path.append('/home/santiagorg2401/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
+sys.path.append('/home/'+ os.getlogin() + '/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
 
 import numpy as np
 from pycrazyswarm import *
@@ -62,7 +62,7 @@ class sender():
         trajUAO.loadcsv("trajectories/traj_UAO.csv")
 
         TRIALS = 1
-        TIMESCALE = 5.0
+        TIMESCALE = 1.5
 
         for i in range(TRIALS):
             for cf in self.allcfs.crazyflies:
@@ -74,7 +74,7 @@ class sender():
 
         # Take off.
         self.allcfs.takeoff(targetHeight=1.54, duration = 7.0)
-        self.timeHelper.sleep(10.0)
+        self.timeHelper.sleep(5.0)
 
         # Set color.
         for cf in self.allcfs.crazyflies:
@@ -82,19 +82,19 @@ class sender():
         
         # Start trajectory.
         self.allcfs.startTrajectory(0, timescale=TIMESCALE)
-        self.timeHelper.sleep(trajU.duration * TIMESCALE + 2.0)
+        self.timeHelper.sleep(trajU.duration * TIMESCALE + 5.0)
 
         # Set color.
         for cf in self.allcfs.crazyflies:
             cf.setLEDColor(1, 1, 1)
 
-        self.timeHelper.sleep(trajA.duration * TIMESCALE + 2.0)
+        self.timeHelper.sleep(trajA.duration * TIMESCALE + 5.0)
         
         # Set color.
         for cf in self.allcfs.crazyflies:
             cf.setLEDColor(1, 0.5, 1)
 
-        self.timeHelper.sleep(trajO.duration * TIMESCALE + 2.0)
+        self.timeHelper.sleep(trajO.duration * TIMESCALE + 5.0)
         
         # Land.
         self.allcfs.land(targetHeight=0.02, duration=5.0)

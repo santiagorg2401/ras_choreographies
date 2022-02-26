@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import sys
+import os
 
-# Change your user.
-sys.path.append('/home/santiagorg2401/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
+sys.path.append('/home/'+ os.getlogin() + '/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
 
 from waypointsPublisher import waypointsPublisher
 from pycrazyswarm import * 
@@ -26,28 +26,27 @@ crazyflies:
     channel: 80
     initialPosition: [1.5, 1.1, 0.0]
     type: default
-  - id: 4
-    channel: 80
-    initialPosition: [1.5, 1.8, 0.0]
-    type: default
-  - id: 5
-    channel: 80
-    initialPosition: [1.0, 1.2, 0.0]
-    type: default
-  - id: 6
-    channel: 80
-    initialPosition: [1.0, 1.69, 0.0]
-    type: default
-  - id: 7
-    channel: 80
-    initialPosition: [0.5, 1.45, 0.0]
-    type: default
-  - id: 8
-    channel: 80
-    initialPosition: [0.5, 2.5, 0.0]
-    type: default
 """
-
+  # - id: 4
+  #   channel: 80
+  #   initialPosition: [1.5, 1.8, 0.0]
+  #   type: default
+  # - id: 5
+  #   channel: 80
+  #   initialPosition: [1.0, 1.2, 0.0]
+  #   type: default
+  # - id: 6
+  #   channel: 80
+  #   initialPosition: [1.0, 1.69, 0.0]
+  #   type: default
+  # - id: 7
+  #   channel: 80
+  #   initialPosition: [0.5, 1.45, 0.0]
+  #   type: default
+  # - id: 8
+  #   channel: 80
+  #   initialPosition: [0.5, 2.5, 0.0]
+  #   type: default
 #Collision avoidance (between Crazyflies) parameters.
 xy_radius = 0.25
 radii = xy_radius * np.array([1.0, 1.0, 3.0])
@@ -94,6 +93,7 @@ class sender():
       for j in range(len(sequences)):
         for i in range(len(self.cfs)):
           self.cfs[i].setLEDColor(0/255.0, 0/255.0, 0/255.0)
+          self.cfs[i].setParam("ring/headlightEnable", 1)
           data = sequences[j][i]
           pos = data[0:3]
           self.cfs[i].goTo(pos, data[3], data[4])
