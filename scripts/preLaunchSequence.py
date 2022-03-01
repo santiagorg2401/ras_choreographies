@@ -3,6 +3,7 @@ import sys
 import os
 
 sys.path.append('/home/'+ os.getlogin() + '/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
+os.chdir("/home/" + os.getlogin() + "/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts/")
 
 # TODO: Limitations: This code only works if you test 3 drones at a time and have no more than 4 drones connected.
 # Add 'self.simTrue = args.sim' on crazyswarm_py.py after line 48.
@@ -25,7 +26,7 @@ crazyflies:
 class sender():
     def __init__(self):
         #Create the needed objects.
-        self.swarm = Crazyswarm(crazyflies_yaml=crazyflies_yaml)
+        self.swarm = Crazyswarm()
         self.allcfs = self.swarm.allcfs
         self.cfs = self.allcfs.crazyflies
         self.timeHelper = self.swarm.timeHelper

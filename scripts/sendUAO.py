@@ -3,6 +3,7 @@ import sys
 import os
 
 sys.path.append('/home/'+ os.getlogin() + '/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
+os.chdir("/home/" + os.getlogin() + "/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts/")
 
 from waypointsPublisher import waypointsPublisher
 from pycrazyswarm import * 
