@@ -15,13 +15,6 @@ from pycrazyswarm import *
 import numpy as np
 
 #List the Crazyflies.
-crazyflies_yaml = """
-crazyflies:
-  - id: 1
-    channel: 80
-    initialPosition: [2.0, 1.1, 0.0]
-    type: default
-"""
 
 class sender():
     def __init__(self):

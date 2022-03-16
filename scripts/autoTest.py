@@ -2,6 +2,7 @@
 import numpy as np
 import sys
 import os
+import rospy
 
 sys.path.append('/home/'+ os.getlogin() + '/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts')
 os.chdir("/home/" + os.getlogin() + "/crazyflie/crazyswarm/ros_ws/src/crazyswarm/scripts/")
@@ -58,7 +59,7 @@ class sender():
 
       #Land.
       self.allcfs.land(targetHeight=0.02, duration = (data[-1][2] - 0.02)/speed)
-      self.timeHelper.sleep((data[-1][2] - 0.02)/speed + 1.0)
+      self.timeHelper.sleep((data[-1][2] - 0.02)/speed + 5.0)
 
     def calculateTime(self, speed, initialPos, finalPos):
       distance = abs(np.linalg.norm(finalPos - initialPos))
@@ -67,8 +68,9 @@ class sender():
       return Time
 
 if __name__ == "__main__":
-  path = 'ras_choreographies/scripts/waypoints/boat2.csv'
+  args = rospy.myargv(argv=sys.argv)
+  file_path = args[1]
   speed = 1.0
 
-  sen = sender(path=path, speed=speed)
+  sen = sender(path=file_path, speed=speed)
   sen.publisher()
