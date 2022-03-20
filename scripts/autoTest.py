@@ -32,7 +32,7 @@ class sender():
       data = np.genfromtxt(self.path, delimiter=',')
       
       takeOffHeight = data[0][2]
-      initialPos = data[0] - np.array([0, 0, takeOffHeight])
+      initialPos = data[:,0:3][0] - np.array([0, 0, takeOffHeight])
 
       # Confirmation.
       print("Press any button to start with the sequence.")
@@ -41,25 +41,27 @@ class sender():
       # Take off.
       self.allcfs.takeoff(targetHeight=takeOffHeight, duration=takeOffHeight/self.speed)
       self.timeHelper.sleep(takeOffHeight/self.speed + 0.1)
-      
-      # Change colour.
-      for cf in self.allcfs.crazyflies:
-        cf.setLEDColor(255/255.0, 0/255.0, 0/255.0)
-        cf.setParam("ring/headlightEnable", 1)
 
       for i in range(0, len(data)):
-          for cf in self.allcfs.crazyflies:
+          for cf in self.cfs:
             if i == 0:
-              Time = self.calculateTime(self.speed, initialPos, data[i])
+              Time = self.calculateTime(self.speed, initialPos, data[:,0:3][i])
             else:
-              Time = self.calculateTime(self.speed, data[i - 1], data[i])
+              Time = self.calculateTime(self.speed, data[:,0:3][i - 1], data[:,0:3][i])
 
-            cf.goTo(data[i], 0, Time)
+            if data[i][3] == 1:
+              cf.setLEDColor(255/255.0, 0/255.0, 0/255.0)
+              cf.setParam("ring/headlightEnable", 1)
+            else:
+              cf.setLEDColor(0/255.0, 0/255.0, 0/255.0)
+              cf.setParam("ring/headlightEnable", 0)
+
+            cf.goTo(data[:,0:3][i], 0, Time)
             self.timeHelper.sleep(Time + 0.1)
 
       #Land.
-      self.allcfs.land(targetHeight=0.02, duration = (data[-1][2] - 0.02)/speed)
-      self.timeHelper.sleep((data[-1][2] - 0.02)/speed + 5.0)
+      self.allcfs.land(targetHeight=0.02, duration = (data[:,0:3][-1][2] - 0.02)/speed)
+      self.timeHelper.sleep((data[:,0:3][-1][2] - 0.02)/speed + 5.0)
 
     def calculateTime(self, speed, initialPos, finalPos):
       distance = abs(np.linalg.norm(finalPos - initialPos))
