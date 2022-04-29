@@ -22,17 +22,14 @@ class sender():
       self.speed = speed
 
       # Set solid color effect on all  LED-Decks (see https://www.bitcraze.io/documentation/repository/crazyflie-firmware/master/ for more parameters).
-      for cf in self.allcfs.crazyflies:
-        cf.setParam("ring/effect", 7)
-        cf.setParam("ring/headlightEnable", 0)
-        cf.setLEDColor(0/255.0, 0/255.0, 0/255.0)
+      self.led(0)
 
     def publisher(self):
       # Set up parameters.
       data = np.genfromtxt(self.path, delimiter=',')
       
       takeOffHeight = data[0][2]
-      initialPos = data[:,0:3][0] - np.array([0, 0, takeOffHeight])
+      initialPos = data[:, 0:3][0] - np.array([0, 0, takeOffHeight])
 
       # Confirmation.
       print("Press any button to start with the sequence.")
@@ -40,28 +37,34 @@ class sender():
 
       # Take off.
       self.allcfs.takeoff(targetHeight=takeOffHeight, duration=takeOffHeight/self.speed)
-      self.timeHelper.sleep(takeOffHeight/self.speed + 0.1)
+      self.timeHelper.sleep(takeOffHeight/self.speed*1.2)
+
+      self.led(1)
+      led = 1
 
       for i in range(0, len(data)):
-          for cf in self.cfs:
+        # try:
+        #   if data[i][3] == 0 & led == 1:
+        #     self.led(0)
+        #     led = 0
+        #   elif data[i][3] == 1 & led == 0:
+        #     self.led(1)
+        #     led = 1
+        # except:
+        #   pass
+
+          for cf in self.allcfs.crazyflies:
             if i == 0:
-              Time = self.calculateTime(self.speed, initialPos, data[:,0:3][i])
+              Time = self.calculateTime(self.speed, initialPos, data[:, 0:3][i])
             else:
-              Time = self.calculateTime(self.speed, data[:,0:3][i - 1], data[:,0:3][i])
+              Time = self.calculateTime(self.speed, data[:, 0:3][i - 1], data[:, 0:3][i])
 
-            if data[i][3] == 1:
-              cf.setLEDColor(255/255.0, 0/255.0, 0/255.0)
-              cf.setParam("ring/headlightEnable", 1)
-            else:
-              cf.setLEDColor(0/255.0, 0/255.0, 0/255.0)
-              cf.setParam("ring/headlightEnable", 0)
-
-            cf.goTo(data[:,0:3][i], 0, Time)
-            self.timeHelper.sleep(Time + 0.1)
+            cf.goTo(data[:, 0:3][i], 0, Time)
+            self.timeHelper.sleep(Time*1.5)
 
       #Land.
-      self.allcfs.land(targetHeight=0.02, duration = (data[:,0:3][-1][2] - 0.02)/speed)
-      self.timeHelper.sleep((data[:,0:3][-1][2] - 0.02)/speed + 5.0)
+      self.allcfs.land(targetHeight=0.02, duration = (data[-1][2] - 0.02)/speed)
+      self.timeHelper.sleep((data[-1][2] - 0.02)/speed*1.2)
 
     def calculateTime(self, speed, initialPos, finalPos):
       distance = abs(np.linalg.norm(finalPos - initialPos))
@@ -69,10 +72,16 @@ class sender():
 
       return Time
 
+    def led(self, enable):
+      # Change colour.
+      for cf in self.allcfs.crazyflies:
+        cf.setLEDColor(255*enable/255.0, 0/255.0, 0/255.0)
+        cf.setParam("ring/headlightEnable", enable)
+
 if __name__ == "__main__":
   args = rospy.myargv(argv=sys.argv)
   file_path = args[1]
-  speed = 1.0
+  speed = 0.6
 
   sen = sender(path=file_path, speed=speed)
   sen.publisher()
