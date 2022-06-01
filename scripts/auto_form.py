@@ -56,6 +56,9 @@ class sender():
             self.cfs[i].takeoff(targetHeight=takeOffHeight,
                                 duration=takeOffHeight/self.speed)
             self.timeHelper.sleep(takeOffHeight/self.speed*1.2)
+
+            self.cfs[i].goTo(data[:,0:3][i], 0, 1)
+            self.timeHelper.sleep(1.2)
         
         # Confirmation.
         print("Press any button to finish the sequence.")
