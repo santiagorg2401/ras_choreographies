@@ -20,7 +20,7 @@ class sender():
 
     def publisher(self):
         # Set up parameters.
-        path = "/home/santiagorg2401/ros2_ws/src/crazyswarm2/crazyflie_examples/crazyflie_examples/ras_choreographies/scripts/waypoints/SGI_lp_wpts.csv"
+        path = "/home/santiagorg2401/ros2_ws/src/crazyswarm2/ras_choreographies/ras_choreographies/waypoints/SGI_lp_wpts.csv"
         data = np.genfromtxt(path, delimiter=',')
 
         takeOffHeight = data[0][2]
